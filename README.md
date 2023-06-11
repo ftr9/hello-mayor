@@ -2,11 +2,15 @@
 
 ## Software engineering project
 
-### Task completed till now
+### Task completed till now 🎉🎉
 
-[ x ] added splash screen
-[ x ] created a design system
-[ x ] walkthrough pages completed
+- [x] added splash screen
+- [x] created a design system
+- [x] walkthrough pages completed
+  - [x] Hello citizens page
+  - [x] Register page
+  - [x] post issues page
+  - [x] meet our teams page
 
 ## 🚀 How to run ?
 
