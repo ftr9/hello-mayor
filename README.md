@@ -2,6 +2,12 @@
 
 ## Software engineering project
 
+### Task completed till now
+
+[ x ] added splash screen
+[ x ] created a design system
+[ x ] walkthrough pages completed
+
 ## 🚀 How to run ?
 
 1. clone the repo by running below command in the terminal
