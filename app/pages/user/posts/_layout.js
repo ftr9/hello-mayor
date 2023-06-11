@@ -1,9 +1,7 @@
-import { View, Text } from 'react-native';
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Icon } from '@rneui/themed';
-import P from '../../../../components/Typography/P';
-import { SECONDARY_COLOR } from '../../../../constants/colors';
+import setTabBarLabel from '@utils/setTabBarLabel.utils';
+import setTabBarIcon from '@utils/setTabBarIcon.utils';
 
 const PostLayout = () => {
   return (
@@ -15,20 +13,8 @@ const PostLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: ({ focused }) => {
-            return (
-              <P size={12} type={focused ? 'regular' : 'light'}>
-                News Feed
-              </P>
-            );
-          },
-
-          tabBarIcon: ({ focused }) => {
-            if (focused) {
-              return <Icon size={20} name="home" type="ionicon" />;
-            }
-            return <Icon size={20} name="home-outline" type="ionicon" />;
-          },
+          tabBarLabel: setTabBarLabel('News Feed'),
+          tabBarIcon: setTabBarIcon('home', 'home-outline'),
           headerShown: false,
         }}
       />
@@ -36,19 +22,8 @@ const PostLayout = () => {
         name="announcement"
         options={{
           headerShown: false,
-          tabBarLabel: ({ focused }) => {
-            return (
-              <P size={12} type={focused ? 'regular' : 'light'}>
-                Announcements
-              </P>
-            );
-          },
-          tabBarIcon: ({ focused }) => {
-            if (focused) {
-              return <Icon size={20} name="megaphone" type="ionicon" />;
-            }
-            return <Icon size={20} name="megaphone-outline" type="ionicon" />;
-          },
+          tabBarLabel: setTabBarLabel('Announcements'),
+          tabBarIcon: setTabBarIcon('megaphone', 'megaphone-outline'),
         }}
       />
       <Tabs.Screen
@@ -56,19 +31,8 @@ const PostLayout = () => {
         options={{
           title: 'My Posts',
           headerShown: false,
-          tabBarLabel: ({ focused }) => {
-            return (
-              <P size={12} type={focused ? 'regular' : 'light'}>
-                My Posts
-              </P>
-            );
-          },
-          tabBarIcon: ({ focused }) => {
-            if (focused) {
-              return <Icon size={20} name="reader" type="ionicon" />;
-            }
-            return <Icon size={20} name="reader-outline" type="ionicon" />;
-          },
+          tabBarLabel: setTabBarLabel('My Posts'),
+          tabBarIcon: setTabBarIcon('reader', 'reader-outline'),
         }}
       />
     </Tabs>
