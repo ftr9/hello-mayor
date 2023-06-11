@@ -1,14 +1,38 @@
-# Expo Router Example
+# Hello Mayor App
 
-Use [`expo-router`](https://expo.github.io/router) to build native navigation using files in the `app/` directory.
+## Software engineering project
 
-## 🚀 How to use
+## 🚀 How to run ?
+
+1. clone the repo by running below command in the terminal
 
 ```sh
-npx create-expo-app -e with-router
+    git clone https://github.com/ftr9/hello-mayor.git
 ```
 
-## 📝 Notes
+2. go inside the project directory
 
-- [Expo Router: Docs](https://expo.github.io/router)
-- [Expo Router: Repo](https://github.com/expo/router)
+```sh
+    cd hello-mayor
+```
+
+3. install all the necessary dependency
+
+```sh
+    npm install
+```
+
+4. finally run the project
+
+```sh
+    npx expo start
+```
+
+## Teams involved
+
+- rahul dotell (team lead)
+- sushrina dhakal (QA engineer)
+- Nihang Lama (Database designer)
+- Smaran Sapkota (Product Manager)
+- Bigesh Gurung (QA engineer)
+- Rishav shrestha (Developer)
