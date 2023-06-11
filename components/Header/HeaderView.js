@@ -12,15 +12,27 @@ const pagesContents = {
   },
   '/pages/auth/register': {
     title: 'Sign Up',
-    content: 'We just need your basic information',
+    content: 'We just need your basic information.',
   },
   '/pages/auth/login': {
     title: 'Sign In',
-    content: "Check out what's happening",
+    content: "Check out what's happening.",
   },
   '/pages/user/profile': {
     title: 'My Profile',
     content: 'My Basic Information.',
+  },
+  '/pages/user/posts': {
+    title: 'Feed',
+    content: "What's going on.",
+  },
+  '/pages/user/posts/announcement': {
+    title: 'Notice',
+    content: "Mayor's announcement.",
+  },
+  '/pages/user/posts/myposts': {
+    title: 'My Posts',
+    content: 'My Issues.',
   },
 };
 

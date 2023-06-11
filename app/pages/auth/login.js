@@ -20,7 +20,7 @@ const Login = () => {
       <View className="px-3 mt-3">
         <P extraStyle="mb-2">* Kathmandu Residence only</P>
         <IconBtn clickHandle={loginBtnClickHandle} title="Login" />
-        <Link className="mt-5" href={'/pages/auth/register'}>
+        <Link className="mt-5" href={'/pages/user/posts'}>
           <P extraStyle="text-txtSecondary underline">No Account ?</P>
         </Link>
       </View>

@@ -13,6 +13,7 @@ const P = ({ children, type = 'light', size = 14, extraStyle }) => {
           type === 'bold' && 'font-BoldUbuntu',
         ],
         [
+          size === 10 && 'text-[10px]',
           size === 12 && 'text-[12px]',
           size === 14 && 'text-[14px]',
           size === 16 && 'text-[16px]',
