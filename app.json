@@ -5,6 +5,12 @@
       "bundler": "metro"
     },
     "name": "hello-mayor",
-    "slug": "hello-mayor"
+    "slug": "hello-mayor",
+    "icon": "./assets/appIcons/icon.png",
+    "splash": {
+      "image": "./assets/appIcons/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#DE1738"
+    }
   }
 }
