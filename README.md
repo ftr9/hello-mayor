@@ -11,6 +11,10 @@
   - [x] Register page
   - [x] post issues page
   - [x] meet our teams page
+- [x] User Dashboard page completed
+  - [x] News Feed page consisting of Progress, Hold and Completed top TabBar
+  - [x] Announcements page
+  - [x] My Posts page
 
 ## 🚀 How to run ?
 
