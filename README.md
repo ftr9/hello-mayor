@@ -1,6 +1,6 @@
 # Hello Mayor App
 
-## Software engineering project
+## Software engineering project - Teacher (Keshav Maharjan)
 
 ### Task completed till now 🎉🎉
 
