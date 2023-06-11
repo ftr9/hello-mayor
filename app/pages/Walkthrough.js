@@ -83,7 +83,7 @@ WalkThrough.PageIndicatorAndNextButton = ({ setCurrentPage, currentPage }) => {
   const router = useRouter();
   const nextClickHandle = () => {
     if (currentPage === 3) {
-      router.push('/pages/auth/login');
+      router.push('/pages/auth/register');
       return;
     }
   };
@@ -129,7 +129,7 @@ WalkThrough.PageIndicatorAndNextButton = ({ setCurrentPage, currentPage }) => {
         />
       </View>
       {currentPage === 3 && (
-        <View className="mt-[30px] w-[100px] self-end">
+        <View className="mt-[30px] w-[120px] self-end">
           <IconBtn title={'Finish'} clickHandle={nextClickHandle} />
         </View>
       )}

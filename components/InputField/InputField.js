@@ -10,9 +10,11 @@ const InputField = ({
   hasError = false,
   errorMessage = '',
   value = '',
+  type = 'default',
 }) => {
   return (
     <Input
+      keyboardType={type}
       cursorColor={'black'}
       containerStyle={inputStyles.containerStyle}
       errorMessage={hasError && errorMessage}

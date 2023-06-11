@@ -14,6 +14,9 @@ export default function Btn({ clickHandle, title }) {
         color: 'white',
         size: 16,
       }}
+      iconContainerStyle={{
+        marginLeft: 20,
+      }}
       titleStyle={{
         fontFamily: UBUNTU_REGULAR,
         fontSize: 14,
@@ -23,7 +26,7 @@ export default function Btn({ clickHandle, title }) {
       buttonStyle={{
         borderRadius: 5,
         paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingVertical: 15,
         width: '100%',
       }}
     />
