@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
 import { Icon, Tab, TabView, Badge } from '@rneui/themed';
 import { UBUNTU_REGULAR } from '@constants/typography';
@@ -7,6 +7,7 @@ import {
   COMPLETED_COLOR,
   SECONDARY_COLOR,
 } from '@constants/colors';
+import Post from '@components/cards/Post';
 
 const returnColorByActiveTab = index => {
   if (index === 0) {
@@ -22,6 +23,7 @@ const returnColorByActiveTab = index => {
 
 const Posts = () => {
   const [index, setIndex] = React.useState(0);
+
   return (
     <>
       <Tab
@@ -44,6 +46,8 @@ const Posts = () => {
         indicatorStyle={{
           height: 2,
           backgroundColor: returnColorByActiveTab(index),
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
         }}
       >
         <Tab.Item
@@ -84,12 +88,27 @@ const Posts = () => {
         />
       </Tab>
 
-      <TabView value={index} onChange={setIndex} animationType="spring">
+      <TabView
+        animationConfig={{
+          speed: 10,
+        }}
+        disableSwipe={true}
+        value={index}
+        onChange={setIndex}
+      >
+        <TabView.Item
+          style={{ flex: 1, backgroundColor: 'blue', width: '100%' }}
+        ></TabView.Item>
         <TabView.Item style={{ width: '100%' }}>
-          <Text h1>Recent</Text>
-        </TabView.Item>
-        <TabView.Item style={{ width: '100%' }}>
-          <Text h1>Favorite</Text>
+          <ScrollView style={{ flex: 1 }}>
+            <Post />
+            <Post />
+            <Post />
+            <Post />
+            <Post />
+            <Post />
+            <Post />
+          </ScrollView>
         </TabView.Item>
         <TabView.Item style={{ width: '100%' }}>
           <Text h1>Cart</Text>

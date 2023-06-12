@@ -17,11 +17,13 @@ module.exports = {
         bgPrimary: '#E9ECEF',
         bgSecondary: '#DE1738',
         bgTertiary: '#1E1E1E',
+        bgPlaceHolder: 'rgba(0,0,0,0.5)',
       },
       colors: {
         txtPrimary: '#E9ECEF',
         txtSecondary: '#DE1738',
         txtTertiary: '#1E1E1E',
+        txtPlaceHolder: 'rgba(0,0,0,0.5)',
       },
     },
   },
