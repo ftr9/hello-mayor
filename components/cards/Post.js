@@ -90,11 +90,11 @@ Post.LikesAndComment = () => {
         </View>
         <P type="regular">16K likes</P>
       </View>
-      <View>
+      <Link href={'/pages/user/comments?postId=12345'}>
         <P size={12} type="regular" extraStyle="text-txtPlaceHolder">
           View all comments
         </P>
-      </View>
+      </Link>
     </View>
   );
 };

@@ -22,7 +22,7 @@ const RootPage = () => {
   }
   return (
     <View onLayout={onLayoutRootView}>
-      <Redirect href={'/pages/Walkthrough'} />
+      <Redirect href={'/pages/user/posts'} />
     </View>
   );
 };

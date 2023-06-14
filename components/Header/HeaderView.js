@@ -34,6 +34,10 @@ const pagesContents = {
     title: 'My Posts',
     content: 'My Issues.',
   },
+  '/pages/user/comments': {
+    title: 'Comments',
+    content: 'See others view.',
+  },
 };
 
 const HeaderView = () => {
