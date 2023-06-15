@@ -1,9 +1,9 @@
 import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
-import InputField from '../../../components/InputField/InputField';
-import IconBtn from '../../../components/Button/IconBtn';
+import InputField from '@components/InputField/InputField';
+import IconBtn from '@components/Button/IconBtn';
 import { Avatar } from '@rneui/themed';
-import P from '../../../components/Typography/P';
+import P from '@components/Typography/P';
 
 const Profile = () => {
   return (

@@ -1,10 +1,12 @@
 import React from 'react';
 import { FlatList, View, Text, TouchableOpacity } from 'react-native';
 import P from '@components/Typography/P';
-import { Avatar, Badge, Icon } from '@rneui/themed';
+import { Avatar, Badge, Icon, Divider } from '@rneui/themed';
 import { SECONDARY_COLOR } from '@constants/colors';
 import { Link } from 'expo-router';
 import { useState } from 'react';
+import IconBtn from '../../components/Button/IconBtn';
+import InputField from '../../components/InputField/InputField';
 
 const IMAGES = [
   'https://images.pexels.com/photos/15342205/pexels-photo-15342205/free-photo-of-woman-in-red-light-holding-a-bunch-of-flowers-at-night.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load',
@@ -14,15 +16,20 @@ const IMAGES = [
   'https://images.pexels.com/photos/16945055/pexels-photo-16945055/free-photo-of-light-city-man-people.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load',
 ];
 
-const Post = () => {
+/**
+ *
+ * @orders
+ * 1. header
+ * 2. location
+ * 3. posttitle
+ * 4.description
+ * 5. images
+ * 6.postLike and comment o approve
+ */
+const Post = ({ children }) => {
   return (
     <View className=" my-1  px-3 border-b-[2px] py-2 border-txtPlaceHolder">
-      <Post.Header />
-      <Post.LocationText />
-      <Post.PostTitle />
-      <Post.PostDescription />
-      <Post.Images />
-      <Post.LikesAndComment />
+      {children}
     </View>
   );
 };
@@ -161,6 +168,31 @@ Post.Header = () => {
           }}
         />
         <P size={12}>pending</P>
+      </View>
+    </View>
+  );
+};
+
+Post.ApproveSection = () => {
+  return (
+    <View className="py-3">
+      <Divider
+        style={{
+          marginTop: 5,
+          marginBottom: 20,
+        }}
+      />
+      <InputField
+        placeholder="Enter reason why not to approve this "
+        label="Reason to decline *"
+      />
+      <View className="flex-row">
+        <View className="flex-1 mx-2">
+          <IconBtn title={'Approve'} iconName="checkmark-done" />
+        </View>
+        <View className="flex-1 mx-2">
+          <IconBtn type="DARK" iconName="close" title={'Decline'} />
+        </View>
       </View>
     </View>
   );

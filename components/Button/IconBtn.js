@@ -1,8 +1,23 @@
 import { Button } from '@rneui/themed';
-import { SECONDARY_COLOR } from '../../constants/colors';
+import { SECONDARY_COLOR, TERTIARY_COLOR } from '../../constants/colors';
 import { UBUNTU_REGULAR } from '../../constants/typography';
+import { TouchableOpacity } from 'react-native';
 
-export default function Btn({ clickHandle, title }) {
+const getColorByType = type => {
+  if (type === 'DARK') {
+    return TERTIARY_COLOR;
+  }
+  if (type === 'LIGHT') {
+    return SECONDARY_COLOR;
+  }
+};
+
+export default function Btn({
+  clickHandle,
+  title,
+  type = 'LIGHT',
+  iconName = 'checkmark',
+}) {
   return (
     <Button
       onPress={clickHandle}
@@ -10,7 +25,7 @@ export default function Btn({ clickHandle, title }) {
       title={title}
       icon={{
         type: 'ionicon',
-        name: 'chevron-forward-outline',
+        name: iconName,
         color: 'white',
         size: 16,
       }}
@@ -22,7 +37,7 @@ export default function Btn({ clickHandle, title }) {
         fontSize: 14,
       }}
       iconPosition={'right'}
-      color={SECONDARY_COLOR}
+      color={getColorByType(type)}
       buttonStyle={{
         borderRadius: 5,
         paddingHorizontal: 20,

@@ -3,7 +3,6 @@ import React from 'react';
 import HeaderTitle from './HeaderTitle';
 import { usePathname } from 'expo-router';
 import HeaderDashboard from './HeaderDashboard';
-import { Header } from '@rneui/base';
 
 const pagesContents = {
   '/pages/Walkthrough': {
@@ -18,7 +17,7 @@ const pagesContents = {
     title: 'Sign In',
     content: "Check out what's happening.",
   },
-  '/pages/user/profile': {
+  '/pages/profile': {
     title: 'My Profile',
     content: 'My Basic Information.',
   },
@@ -37,6 +36,26 @@ const pagesContents = {
   '/pages/user/comments': {
     title: 'Comments',
     content: 'See others view.',
+  },
+  '/pages/user/createpost': {
+    title: 'CreatePost',
+    content: 'Time to post issues.',
+  },
+  '/pages/admin/page': {
+    title: 'Issue Feed',
+    content: 'Approved or decline Issues.',
+  },
+  '/pages/admin/page/announcement': {
+    title: 'Notice',
+    content: 'Say Something to your citizens',
+  },
+  '/pages/admin/page/users': {
+    title: 'Users List',
+    content: 'Your citizens.',
+  },
+  '/pages/admin/createpost': {
+    title: 'Notify',
+    content: 'Make some announcements.',
   },
 };
 

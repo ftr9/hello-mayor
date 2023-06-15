@@ -8,7 +8,7 @@ import { Link, useRouter } from 'expo-router';
 const Login = () => {
   const router = useRouter();
   const loginBtnClickHandle = () => {
-    router.push('/pages/user/profile');
+    router.push('/pages/user/posts');
   };
   return (
     <View className="flex-1 justify-center">
@@ -20,7 +20,7 @@ const Login = () => {
       <View className="px-3 mt-3">
         <P extraStyle="mb-2">* Kathmandu Residence only</P>
         <IconBtn clickHandle={loginBtnClickHandle} title="Login" />
-        <Link className="mt-5" href={'/pages/user/posts'}>
+        <Link className="mt-5" href={'/pages/admin/page'}>
           <P extraStyle="text-txtSecondary underline">No Account ?</P>
         </Link>
       </View>

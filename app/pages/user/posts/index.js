@@ -8,6 +8,7 @@ import {
   SECONDARY_COLOR,
 } from '@constants/colors';
 import Post from '@components/cards/Post';
+import { useRouter } from 'expo-router';
 
 const returnColorByActiveTab = index => {
   if (index === 0) {
@@ -21,12 +22,40 @@ const returnColorByActiveTab = index => {
   }
 };
 
+const ProgressPage = () => {
+  return (
+    <ScrollView className="flex-1">
+      <Post>
+        <Post.Header />
+        <Post.LocationText />
+        <Post.PostTitle />
+        <Post.PostDescription />
+        <Post.Images />
+        <Post.LikesAndComment />
+      </Post>
+    </ScrollView>
+  );
+};
+
+const HoldPage = () => {
+  return <ScrollView className="flex-1 "></ScrollView>;
+};
+
+const CompletedPage = () => {
+  return <ScrollView className="flex-1 "></ScrollView>;
+};
+
 const Posts = () => {
   const [index, setIndex] = React.useState(0);
+  const router = useRouter();
+  const createPostClickHandle = () => {
+    router.push('/pages/user/createpost');
+  };
 
   return (
     <>
       <FAB
+        onPress={createPostClickHandle}
         icon={{ name: 'create-outline', type: 'ionicon', color: 'white' }}
         size={'large'}
         style={{
@@ -41,7 +70,9 @@ const Posts = () => {
       />
       <Posts.Tabs index={index} setIndex={setIndex} />
 
-      <Posts.Views index={index} setIndex={setIndex} />
+      {index === 0 && <ProgressPage />}
+      {index === 1 && <HoldPage />}
+      {index === 2 && <CompletedPage />}
     </>
   );
 };
@@ -66,7 +97,7 @@ Posts.Tabs = ({ index, setIndex }) => {
       }}
       iconPosition="right"
       indicatorStyle={{
-        height: 2,
+        height: 3,
         backgroundColor: returnColorByActiveTab(index),
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
@@ -109,53 +140,6 @@ Posts.Tabs = ({ index, setIndex }) => {
         )}
       />
     </Tab>
-  );
-};
-
-Posts.Views = ({ index, setIndex }) => {
-  return (
-    <TabView
-      animationConfig={{
-        speed: 10,
-      }}
-      disableSwipe={true}
-      value={index}
-      onChange={setIndex}
-    >
-      {/**
-       * Progress Tab
-       */}
-      <TabView.Item style={{ flex: 1, width: '100%' }}>
-        <ScrollView style={{ flex: 1 }}>
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-        </ScrollView>
-      </TabView.Item>
-      {/**
-       * Hold tab
-       */}
-      <TabView.Item style={{ width: '100%' }}>
-        <ScrollView style={{ flex: 1 }}>
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-        </ScrollView>
-      </TabView.Item>
-      {/**
-       * competed tab
-       */}
-      <TabView.Item style={{ width: '100%' }}>
-        <ScrollView style={{ flex: 1 }}>
-          <Post />
-          <Post />
-          <Post />
-          <Post />
-        </ScrollView>
-      </TabView.Item>
-    </TabView>
   );
 };
 

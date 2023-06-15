@@ -8,10 +8,14 @@ import { useState } from 'react';
 import ListModal from '@components/modal/ListModal';
 import NotificationCard from '@components/cards/Notification';
 import { ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { faker } from '@faker-js/faker';
+
+const USER_RANDOM_IMG = faker.internet.avatar();
 
 const HeaderDashboard = ({ title, content }) => {
   const BadgedIcon = withBadge()(Icon);
-
+  const router = useRouter();
   const [isModalOpen, setModalOpen] = useState(false);
 
   const notificationClickHandle = () => {
@@ -21,6 +25,10 @@ const HeaderDashboard = ({ title, content }) => {
     setModalOpen(false);
   };
 
+  const profileClickHandle = () => {
+    router.push('/pages/profile');
+  };
+
   return (
     <>
       <View className="flex-row justify-between items-center">
@@ -28,9 +36,7 @@ const HeaderDashboard = ({ title, content }) => {
           <P type="bold" extraStyle="mb-[0.5px] text-white" size={24}>
             {title ? title : 'XXXXXXXXXX'}
           </P>
-          <P extraStyle={'text-white'}>
-            {content ? content : 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'}
-          </P>
+          <P extraStyle={'text-white'}>{content ? content : 'XXXXXXXXXX'}</P>
         </View>
         <View className="flex-row items-center">
           <BadgedIcon
@@ -42,6 +48,10 @@ const HeaderDashboard = ({ title, content }) => {
           />
           <Avatar
             size={45}
+            onPress={profileClickHandle}
+            source={{
+              uri: USER_RANDOM_IMG,
+            }}
             rounded
             title="RA"
             titleStyle={{
@@ -51,6 +61,8 @@ const HeaderDashboard = ({ title, content }) => {
             containerStyle={{
               backgroundColor: PRIMARY_COLOR,
               marginLeft: 35,
+              borderWidth: 3,
+              borderColor: PRIMARY_COLOR,
             }}
           />
         </View>
