@@ -7,8 +7,6 @@ import AllStatusTabBar from '../../../../components/Tabs/AllStatusTabBar';
 
 import { faker } from '@faker-js/faker';
 
-console.log(faker.lorem.paragraphs());
-
 const PendingPage = () => {
   return <Text>This is Admins pending page</Text>;
 };

@@ -9,6 +9,9 @@ import {
 } from '@constants/colors';
 import Post from '@components/cards/Post';
 import { useRouter } from 'expo-router';
+import { faker } from '@faker-js/faker';
+import { useState } from 'react';
+import P from '@components/Typography/P';
 
 const returnColorByActiveTab = index => {
   if (index === 0) {
@@ -22,31 +25,66 @@ const returnColorByActiveTab = index => {
   }
 };
 
-const ProgressPage = () => {
+const ProgressPage = React.memo(({ setDraggingUp }) => {
   return (
-    <ScrollView className="flex-1">
-      <Post>
-        <Post.Header />
-        <Post.LocationText />
-        <Post.PostTitle />
-        <Post.PostDescription />
-        <Post.Images />
-        <Post.LikesAndComment />
-      </Post>
+    <ScrollView
+      onScroll={e => {
+        if (e.nativeEvent.velocity.y > 0) {
+          setDraggingUp(true);
+        } else {
+          setDraggingUp(false);
+        }
+      }}
+      className="flex-1"
+    >
+      {new Array(20).fill('a').map((_, index) => {
+        return (
+          <Post key={index}>
+            <Post.Header
+              imageUrl={faker.internet.avatar()}
+              username={faker.person.firstName()}
+              publishedDate={faker.date.birthdate().toLocaleDateString()}
+            />
+            <Post.LocationText
+              fullLocation={`${faker.location.country()},${faker.location.secondaryAddress()}`}
+            />
+            <Post.PostTitle />
+            <Post.PostDescription description={faker.lorem.paragraphs()} />
+            <Post.Images
+              imageUrls={[
+                faker.image.urlLoremFlickr({ category: 'nature' }),
+                faker.image.urlLoremFlickr({ category: 'nature' }),
+                faker.image.urlLoremFlickr({ category: 'nature' }),
+                faker.image.urlLoremFlickr({ category: 'nature' }),
+              ]}
+            />
+            <Post.LikesAndComment />
+          </Post>
+        );
+      })}
+    </ScrollView>
+  );
+});
+
+const HoldPage = () => {
+  return (
+    <ScrollView className="flex-1 ">
+      <P>This is hold page</P>
     </ScrollView>
   );
 };
 
-const HoldPage = () => {
-  return <ScrollView className="flex-1 "></ScrollView>;
-};
-
 const CompletedPage = () => {
-  return <ScrollView className="flex-1 "></ScrollView>;
+  return (
+    <ScrollView className="flex-1 ">
+      <P>This is completed page</P>
+    </ScrollView>
+  );
 };
 
 const Posts = () => {
   const [index, setIndex] = React.useState(0);
+  const [isDraggingUp, setDraggingUp] = useState(false);
   const router = useRouter();
   const createPostClickHandle = () => {
     router.push('/pages/user/createpost');
@@ -57,11 +95,11 @@ const Posts = () => {
       <FAB
         onPress={createPostClickHandle}
         icon={{ name: 'create-outline', type: 'ionicon', color: 'white' }}
-        size={'large'}
+        size={'small'}
         style={{
           position: 'absolute',
           zIndex: 1000,
-          top: '88%',
+          top: isDraggingUp ? '8%' : '88%',
           right: 20,
         }}
         containerStyle={{
@@ -70,7 +108,7 @@ const Posts = () => {
       />
       <Posts.Tabs index={index} setIndex={setIndex} />
 
-      {index === 0 && <ProgressPage />}
+      {index === 0 && <ProgressPage setDraggingUp={setDraggingUp} />}
       {index === 1 && <HoldPage />}
       {index === 2 && <CompletedPage />}
     </>

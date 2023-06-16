@@ -34,22 +34,22 @@ const Post = ({ children }) => {
   );
 };
 
-Post.LocationText = () => {
+Post.LocationText = ({ fullLocation }) => {
   return (
     <View className="flex-row my-2">
       <Icon type="ionicon" name="location" size={20} color={SECONDARY_COLOR} />
       <P size={12} type="regular" extraStyle="ml-3">
-        Kathmandu pepsicola, Manohara 35, near suncity chowk, Himalayan toless
+        {fullLocation}
       </P>
     </View>
   );
 };
 
-Post.Images = () => {
+Post.Images = ({ imageUrls = [] }) => {
   return (
     <FlatList
       horizontal
-      data={IMAGES}
+      data={imageUrls}
       keyExtractor={(_, index) => index}
       showsHorizontalScrollIndicator
       renderItem={({ item }) => {
@@ -106,10 +106,9 @@ Post.LikesAndComment = () => {
   );
 };
 
-Post.PostDescription = () => {
+Post.PostDescription = ({ description }) => {
   const [isSeenMore, setSeenMore] = useState(false);
-  const content = `It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout
-  `;
+  const content = description;
 
   const hasLongText = content.length > 150;
   const seeMoreClickHandle = () => setSeenMore(true);
@@ -141,22 +140,25 @@ Post.PostDescription = () => {
   );
 };
 
-Post.Header = () => {
+Post.Header = ({ imageUrl, username, publishedDate }) => {
   return (
     <View className="flex-row items-center  justify-between">
       {/**Right */}
       <View className="flex-row items-center space-x-3">
         <Avatar
           title="RA"
+          source={{
+            uri: imageUrl,
+          }}
           rounded
           size={40}
           containerStyle={{ backgroundColor: 'black' }}
         />
         <View>
           <P extraStyle={'mb-[0.5px]'} type="regular" size={14}>
-            Rahul Dotel
+            {username}
           </P>
-          <P size={12}>March 20,2022</P>
+          <P size={12}>{publishedDate}</P>
         </View>
       </View>
       {/**Left */}
