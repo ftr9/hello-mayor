@@ -15,6 +15,7 @@ module.exports = function (api) {
             '@components': './components',
             '@constants': './constants',
             '@utils': './utils',
+            '@config': './config',
           },
         },
       ],
