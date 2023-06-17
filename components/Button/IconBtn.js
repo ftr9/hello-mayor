@@ -17,12 +17,14 @@ export default function Btn({
   title,
   type = 'LIGHT',
   iconName = 'checkmark',
+  isLoading = false,
 }) {
   return (
     <Button
       onPress={clickHandle}
       activeOpacity={1}
       title={title}
+      loading={isLoading}
       icon={{
         type: 'ionicon',
         name: iconName,

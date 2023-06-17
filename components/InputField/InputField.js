@@ -10,6 +10,7 @@ const InputField = ({
   hasError = false,
   errorMessage = '',
   value = '',
+  onValueChange = value => console.log(value),
   type = 'default',
 }) => {
   return (
@@ -22,6 +23,7 @@ const InputField = ({
       inputContainerStyle={inputStyles.inputContainerStyle}
       inputStyle={inputStyles.inputStyles}
       label={label}
+      onChangeText={onValueChange}
       labelStyle={inputStyles.labelStyle}
       placeholder={placeholder}
       placeholderTextColor={PLACEHOLDER_COLOR}
