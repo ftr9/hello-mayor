@@ -11,6 +11,14 @@
       "image": "./assets/appIcons/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#DE1738"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "520b2237-c088-47cf-8f55-82a7a6981a92"
+      }
+    },
+    "android": {
+      "package": "com.luhardotel.hellomayor"
     }
   }
 }
