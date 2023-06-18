@@ -15,6 +15,8 @@
   - [x] News Feed page consisting of Progress, Hold and Completed top TabBar
   - [x] Announcements page
   - [x] My Posts page
+- [x] Added firebase in to the project
+  - [x] created userschema
 
 ## 🚀 How to run ?
 

@@ -16,9 +16,13 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { addDoc } from 'firebase/firestore';
+import { setDoc } from 'firebase/firestore';
 import { db, auth, storage } from '@config/firebase';
-import { userCollection, getprofileRefStorage } from '@config/firebaseRefs';
+import {
+  userCollection,
+  getprofileRefStorage,
+  getUserRefDoc,
+} from '@config/firebaseRefs';
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'expo-router';
 import { getDownloadURL, uploadBytes } from 'firebase/storage';
@@ -73,11 +77,12 @@ const Register = () => {
       );
 
       //2)create user profile for more information
-      await addDoc(userCollection, {
-        emailAddress: userCredential.user.email,
+      await setDoc(getUserRefDoc(userCredential.user.uid), {
         phone: data.phonenumber,
         username: data.username,
         avatar: uploadedImageUrl,
+        email: userCredential.user.email,
+        id: userCredential.user.uid,
       });
 
       //3) navigate user to login page
