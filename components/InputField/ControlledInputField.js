@@ -11,6 +11,8 @@ const ControlledInputField = ({
   hasError,
   errorMessage,
   name,
+  secureTextEntry,
+  multiline,
 }) => {
   return (
     <Controller
@@ -25,6 +27,8 @@ const ControlledInputField = ({
             errorMessage={errorMessage}
             value={value}
             onValueChange={onChange}
+            secureTextEntry={secureTextEntry}
+            multiline={multiline}
           />
         );
       }}
