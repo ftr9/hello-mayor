@@ -6,7 +6,7 @@
       "bundler": "metro"
     },
     "name": "hello-mayor",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "slug": "hello-mayor",
     "icon": "./assets/appIcons/icon.png",
     "splash": {
