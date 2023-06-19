@@ -2,6 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useCallback } from 'react';
 import { Redirect, SplashScreen } from 'expo-router';
 import { useFonts } from 'expo-font';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 SplashScreen.preventAutoHideAsync();
 const RootPage = () => {
@@ -11,11 +13,16 @@ const RootPage = () => {
     'Ubuntu-Bold': require('@assets/fonts/Ubuntu-Bold.ttf'),
   });
 
+  const [isWalkThroughPagesSeen, setWalkThroughPagesSeen] = useState(false);
+  const [isCheckingStatus, setCheckStatus] = useState(false);
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {}, []);
 
   if (!fontsLoaded) {
     return null;

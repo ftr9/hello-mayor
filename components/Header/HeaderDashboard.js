@@ -10,13 +10,13 @@ import NotificationCard from '@components/cards/Notification';
 import { ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { faker } from '@faker-js/faker';
-
-const USER_RANDOM_IMG = faker.internet.avatar();
+import useUserStore from '../../store/useUserStore';
 
 const HeaderDashboard = ({ title, content }) => {
   const BadgedIcon = withBadge()(Icon);
   const router = useRouter();
   const [isModalOpen, setModalOpen] = useState(false);
+  const { user } = useUserStore();
 
   const notificationClickHandle = () => {
     setModalOpen(true);
@@ -50,7 +50,7 @@ const HeaderDashboard = ({ title, content }) => {
             size={45}
             onPress={profileClickHandle}
             source={{
-              uri: USER_RANDOM_IMG,
+              uri: user?.avatar,
             }}
             rounded
             title="RA"

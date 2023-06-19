@@ -1,8 +1,6 @@
 import { View, ScrollView, Alert } from 'react-native';
 import React, { useState } from 'react';
 import P from '@components/Typography/P';
-import { Avatar } from '@rneui/themed';
-import { TERTIARY_COLOR, PRIMARY_COLOR } from '@constants/colors';
 import IconBtn from '@components/Button/IconBtn';
 import { Link } from 'expo-router';
 import { useForm } from 'react-hook-form';
@@ -13,30 +11,23 @@ import {
   PHONE_NUM_RULE,
   PASSWORD_RULE,
 } from '@constants/textInputRules';
-import * as ImagePicker from 'expo-image-picker';
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc } from 'firebase/firestore';
-import { db, auth, storage } from '@config/firebase';
-import {
-  userCollection,
-  getprofileRefStorage,
-  getUserRefDoc,
-} from '@config/firebaseRefs';
+import { auth } from '@config/firebase';
+import { getprofileRefStorage, getUserRefDoc } from '@config/firebaseRefs';
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'expo-router';
 import { getDownloadURL, uploadBytes } from 'firebase/storage';
 import * as Crypto from 'expo-crypto';
-import ExistingImageCard from '@components/cards/ExistingImageCard';
-import getMediaPermissionGrantStatus from '@utils/getMediaPermissionGrantStatus';
-import showCancelableAlert from '@utils/showCancelableAlert';
 import getValidImageExtension from '@utils/checkAndGetValidImgExt';
+import uploadSingleImg from '../../../utils/uploadSingleImg';
+import AddImage from '../../../components/cards/AddImage';
 
 const Register = () => {
   const router = useRouter();
   const [isSubmitting, setSubmitting] = useState(false);
   const [avatar, setAvatar] = useState(null);
-  const [base64Image, setBase64Image] = useState(null);
 
   const {
     control,
@@ -56,17 +47,12 @@ const Register = () => {
       let uploadedImageUrl = null;
       setSubmitting(true);
 
-      if (avatar && base64Image) {
-        const fetchImage = await fetch(avatar);
-        const blob = await fetchImage.blob();
-
-        const imageExtension = getValidImageExtension(avatar);
-        const profileImageRef = getprofileRefStorage(
-          Crypto.randomUUID() + imageExtension
-        );
-
-        const uploadResult = await uploadBytes(profileImageRef, blob);
-        uploadedImageUrl = await getDownloadURL(uploadResult.ref);
+      if (avatar) {
+        try {
+          uploadedImageUrl = await uploadSingleImg(avatar);
+        } catch (err) {
+          uploadedImageUrl = null;
+        }
       }
 
       //1)create user with email and password
@@ -83,6 +69,7 @@ const Register = () => {
         avatar: uploadedImageUrl,
         email: userCredential.user.email,
         id: userCredential.user.uid,
+        isAdmin: false,
       });
 
       //3) navigate user to login page
@@ -95,6 +82,7 @@ const Register = () => {
         },
       ]);
     } catch (err) {
+      console.log(err);
       if (err instanceof FirebaseError) {
         if (err.code === 'auth/email-already-in-use') {
           Alert.alert(
@@ -159,11 +147,7 @@ const Register = () => {
       />
 
       <View className="px-3">
-        <Register.AddImage
-          avatar={avatar}
-          setAvatar={setAvatar}
-          setBase64Image={setBase64Image}
-        />
+        <AddImage avatar={avatar} setAvatar={setAvatar} />
         <P type="regular" extraStyle={'mb-3'}>
           * This is for Kathmandu Residence only
         </P>
@@ -182,65 +166,5 @@ const Register = () => {
     </ScrollView>
   );
 };
-
-const AddImage = ({ avatar, setAvatar, setBase64Image }) => {
-  const addImageClickHandle = async () => {
-    //1) @configs get media permission first
-    const isMediaPermissionGranted = await getMediaPermissionGrantStatus();
-    if (!isMediaPermissionGranted) {
-      return;
-    }
-
-    //2) Launch the media library to grab an image
-    const imageResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: false,
-      base64: true,
-    });
-
-    if (imageResult.canceled) {
-      return;
-    }
-
-    //3) make sure valid image is selected
-    const imageExtension = getValidImageExtension(imageResult.assets[0].uri);
-    if (!imageExtension) {
-      showCancelableAlert(
-        'Unsupported image',
-        'please select valid jpeg or png or jpg image'
-      );
-      return false;
-    }
-
-    //4) update the state - set avatar and base 64 image
-    setAvatar(imageResult.assets[0].uri);
-    setBase64Image(imageResult.assets[0].base64);
-  };
-
-  return (
-    <View className=" items-center mb-8">
-      <P extraStyle="mb-5">Add Your Profile Picture (optional)</P>
-      {avatar ? (
-        <View className="w-[500px]">
-          <ExistingImageCard
-            imageUri={avatar}
-            addPressHandle={addImageClickHandle}
-          />
-        </View>
-      ) : (
-        <Avatar
-          onPress={addImageClickHandle}
-          containerStyle={{
-            backgroundColor: TERTIARY_COLOR,
-          }}
-          size={120}
-          rounded
-          icon={{ type: 'ionicon', name: 'add-outline', color: PRIMARY_COLOR }}
-        />
-      )}
-    </View>
-  );
-};
-Register.AddImage = AddImage;
 
 export default Register;

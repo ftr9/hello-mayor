@@ -6,7 +6,7 @@ import NormalBtn from '../Button/NormalBtn';
 import { BORDER_COLOR } from '@constants/colors';
 import { SECONDARY_COLOR } from '../../constants/colors';
 
-const User = ({ username, email, imageUrl }) => {
+const User = ({ id, username, email, imageUrl, isAdmin }) => {
   return (
     <View className="pt-2">
       <View className="flex-row items-center">
@@ -29,13 +29,16 @@ const User = ({ username, email, imageUrl }) => {
           </P>
         </View>
       </View>
-      <View className="flex-row justify-end">
-        <View className="mr-2">
-          <NormalBtn title={'Warn'} />
-        </View>
+      {!isAdmin && (
+        <View className="flex-row justify-end">
+          <View className="mr-2">
+            <NormalBtn title={'Warn'} />
+          </View>
 
-        <NormalBtn title={'Block'} type={'DARK'} />
-      </View>
+          <NormalBtn title={'Block'} type={'DARK'} />
+        </View>
+      )}
+
       <Divider style={{ marginTop: 8 }} />
     </View>
   );

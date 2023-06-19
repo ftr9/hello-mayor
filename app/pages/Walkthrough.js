@@ -12,6 +12,7 @@ import {
 } from '@assets/lottie';
 import WalkThroughLastPage from '@components/pages/Walkthrough/WalkThroughLastPage';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WalkThrough = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -81,8 +82,9 @@ WalkThrough.Page4 = ({ key }) => {
 
 WalkThrough.PageIndicatorAndNextButton = ({ setCurrentPage, currentPage }) => {
   const router = useRouter();
-  const nextClickHandle = () => {
+  const nextClickHandle = async () => {
     if (currentPage === 3) {
+      await AsyncStorage.setItem('isWalkThroughPageSeen', true);
       router.push('/pages/auth/register');
       return;
     }

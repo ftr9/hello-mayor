@@ -1,21 +1,26 @@
 import React from 'react';
-import { FlatList, View, Text, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Linking,
+  ToastAndroid,
+} from 'react-native';
 import P from '@components/Typography/P';
 import { Avatar, Badge, Icon, Divider } from '@rneui/themed';
 import { SECONDARY_COLOR } from '@constants/colors';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import IconBtn from '../../components/Button/IconBtn';
-import InputField from '../../components/InputField/InputField';
-
-const IMAGES = [
-  'https://images.pexels.com/photos/15342205/pexels-photo-15342205/free-photo-of-woman-in-red-light-holding-a-bunch-of-flowers-at-night.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load',
-  'https://images.pexels.com/photos/8405874/pexels-photo-8405874.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load',
-  'https://images.pexels.com/photos/14947778/pexels-photo-14947778.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load',
-  'https://images.pexels.com/photos/14640501/pexels-photo-14640501.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load',
-  'https://images.pexels.com/photos/16945055/pexels-photo-16945055/free-photo-of-light-city-man-people.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load',
-];
-
+import ControlledInputField from '../InputField/ControlledInputField';
+import { useForm } from 'react-hook-form';
+import { getPostRefDoc } from '../../config/firebaseRefs';
+import { deleteDoc } from 'firebase/firestore';
+import showCancelableAlert from '../../utils/showCancelableAlert';
+import { postCollectionRef } from '../../config/firebaseRefs';
+import { query, where, orderBy, updateDoc } from 'firebase/firestore';
 /**
  *
  * @orders
@@ -70,34 +75,50 @@ Post.Images = ({ imageUrls = [] }) => {
   );
 };
 
-Post.Videos = () => {};
+Post.PostTitle = ({
+  title = 'road Problem',
+  isNotice = false,
+  lat = '0.00',
+  long = '0.00',
+}) => {
+  const seeOnMapHandle = async () => {
+    const destinationLatitude = lat; // Replace with the destination latitude
+    const destinationLongitude = long; // Replace with the destination longitude
+    try {
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${destinationLatitude},${destinationLongitude}&travelmode=driving`;
+      await Linking.openURL(url);
+      ToastAndroid.show('Opening Google maps', ToastAndroid.SHORT);
+    } catch (err) {
+      showCancelableAlert('Map Error', 'cant open map for a moment try again.');
+    }
+  };
 
-Post.PostTitle = () => {
   return (
     <View className="flex-row justify-between items-center mb-2">
       <P size={16} type="bold">
-        Road Problem
+        {title}
       </P>
-      <Link href={'/'}>
-        <P size={12} type="regular" extraStyle="text-txtSecondary underline">
-          See on map
-        </P>
-      </Link>
+      {!isNotice && (
+        <TouchableOpacity onPress={seeOnMapHandle}>
+          <P size={12} type="regular" extraStyle="text-txtSecondary underline">
+            See on map
+          </P>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
 
-Post.LikesAndComment = () => {
+Post.LikesAndComment = ({ postId, commentsLength }) => {
   return (
     <View className="mb-2">
       <View className="flex-row justify-between items-center mt-4 mb-3">
         <View className="flex-row space-x-3">
-          <Icon size={26} name="heart-outline" type="ionicon" />
           <Icon size={26} name="chatbubble-outline" type="ionicon" />
         </View>
-        <P type="regular">16K likes</P>
+        <P type="regular">{commentsLength} comments</P>
       </View>
-      <Link href={'/pages/user/comments?postId=12345'}>
+      <Link href={`/pages/user/comments?postId=${postId}`}>
         <P size={12} type="regular" extraStyle="text-txtPlaceHolder">
           View all comments
         </P>
@@ -140,7 +161,13 @@ Post.PostDescription = ({ description }) => {
   );
 };
 
-Post.Header = ({ imageUrl, username, publishedDate }) => {
+Post.Header = ({
+  imageUrl,
+  username,
+  publishedDate,
+  isNotice = false,
+  status = 'pending',
+}) => {
   return (
     <View className="flex-row items-center  justify-between">
       {/**Right */}
@@ -162,20 +189,139 @@ Post.Header = ({ imageUrl, username, publishedDate }) => {
         </View>
       </View>
       {/**Left */}
-      <View className="flex-row space-x-3">
-        <Badge
-          badgeStyle={{
-            marginRight: 5,
-            backgroundColor: 'orange',
-          }}
-        />
-        <P size={12}>pending</P>
-      </View>
+      {!isNotice && (
+        <View className="flex-row space-x-3">
+          <Badge
+            badgeStyle={{
+              marginRight: 5,
+              backgroundColor: 'orange',
+            }}
+          />
+          <P size={12}>{status?.toLowerCase()}</P>
+        </View>
+      )}
     </View>
   );
 };
 
-Post.ApproveSection = () => {
+Post.changeStatus = ({ postId, fetchMyPosts, dataPropertyName, status }) => {
+  const statusChangeHandle = () => {
+    Alert.alert(
+      'Change Status',
+      'change the status by clicking in to one of the following',
+      [
+        {
+          text: 'progress',
+          onPress: async () => {
+            await updateDoc(getPostRefDoc(postId), {
+              status: 'PROGRESS',
+            });
+            await fetchMyPosts(
+              dataPropertyName,
+              'isFetchingPosts',
+              query(
+                postCollectionRef,
+                where('status', '==', status),
+                orderBy('createdAt', 'desc')
+              )
+            );
+          },
+        },
+        {
+          text: 'hold',
+          onPress: async () => {
+            await updateDoc(getPostRefDoc(postId), {
+              status: 'HOLD',
+            });
+            await fetchMyPosts(
+              dataPropertyName,
+              'isFetchingPosts',
+              query(
+                postCollectionRef,
+                where('status', '==', status),
+                orderBy('createdAt', 'desc')
+              )
+            );
+          },
+        },
+        {
+          text: 'completed',
+          onPress: async () => {
+            await updateDoc(getPostRefDoc(postId), {
+              status: 'COMPLETED',
+            });
+            await fetchMyPosts(
+              dataPropertyName,
+              'isFetchingPosts',
+              query(
+                postCollectionRef,
+                where('status', '==', status),
+                orderBy('createdAt', 'desc')
+              )
+            );
+          },
+        },
+      ]
+    );
+  };
+
+  return (
+    <TouchableOpacity onPress={statusChangeHandle}>
+      <P size={12} extraStyle={'underline text-txtSecondary'}>
+        Change Status
+      </P>
+    </TouchableOpacity>
+  );
+};
+
+Post.ApproveSection = ({ postId, fetchMyPosts }) => {
+  const [isApproving, setApproving] = useState(false);
+  const [isDeclining, setDeclining] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      reasonToDecline: '',
+    },
+  });
+
+  const declineClickHandle = handleSubmit(async data => {
+    setDeclining(true);
+    await deleteDoc(getPostRefDoc(postId));
+    setDeclining(false);
+    showCancelableAlert('Decline successfull', 'the post was declined');
+    await fetchMyPosts(
+      'pendingPosts',
+      'isFetchingPosts',
+      query(
+        postCollectionRef,
+        where('status', '==', 'PENDING'),
+        orderBy('createdAt', 'desc')
+      )
+    );
+  });
+
+  const approveClickHandle = async () => {
+    setApproving(true);
+    console.log('this is called');
+    await updateDoc(getPostRefDoc(postId), {
+      status: 'PROGRESS',
+    });
+    await fetchMyPosts(
+      'pendingPosts',
+      'isFetchingPosts',
+      query(
+        postCollectionRef,
+        where('status', '==', 'PENDING'),
+        orderBy('createdAt', 'desc')
+      )
+    );
+    setApproving(false);
+  };
+
   return (
     <View className="py-3">
       <Divider
@@ -184,16 +330,38 @@ Post.ApproveSection = () => {
           marginBottom: 20,
         }}
       />
-      <InputField
-        placeholder="Enter reason why not to approve this "
-        label="Reason to decline *"
+      <ControlledInputField
+        label={'Reason to decline *'}
+        placeholder={'Enter reason why not to approve this'}
+        control={control}
+        rules={{
+          required: {
+            value: true,
+            message: '* reason to decline must be specified',
+          },
+        }}
+        name={'reasonToDecline'}
+        hasError={errors?.reasonToDecline}
+        errorMessage={errors?.reasonToDecline?.message}
       />
+
       <View className="flex-row">
         <View className="flex-1 mx-2">
-          <IconBtn title={'Approve'} iconName="checkmark-done" />
+          <IconBtn
+            isLoading={isApproving}
+            clickHandle={approveClickHandle}
+            title={'Approve'}
+            iconName="checkmark-done"
+          />
         </View>
         <View className="flex-1 mx-2">
-          <IconBtn type="DARK" iconName="close" title={'Decline'} />
+          <IconBtn
+            isLoading={isDeclining}
+            clickHandle={declineClickHandle}
+            type="DARK"
+            iconName="close"
+            title={'Decline'}
+          />
         </View>
       </View>
     </View>

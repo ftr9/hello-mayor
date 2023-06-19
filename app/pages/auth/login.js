@@ -26,8 +26,8 @@ const Login = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      emailAddress: '',
-      password: '',
+      emailAddress: 'balen@gmail.com',
+      password: 'balenL0C0',
     },
   });
 
@@ -45,14 +45,24 @@ const Login = () => {
       const userDetails = await getDoc(getUserRefDoc(userCredential.user.uid));
 
       //3) store that to local storage
-      await AsyncStorage.setItem('user', JSON.stringify(userDetails.data()));
+      await AsyncStorage.setItem(
+        'user',
+        JSON.stringify({ id: userDetails.id })
+      );
       //4) update global store
       setUser(userDetails.data());
       //5) login the user in
-      router.push('/pages/user/posts');
+      if (userDetails.data().isAdmin) {
+        router.push('/pages/admin/page');
+      } else {
+        router.push('/pages/user/posts');
+      }
     } catch (err) {
       if (err instanceof FirebaseError) {
-        if (err.code === 'auth/user-not-found') {
+        if (
+          err.code === 'auth/user-not-found' ||
+          err.code === 'auth/wrong-password'
+        ) {
           console.log('this part');
           setError('emailAddress', {
             type: 'invalid Email address',

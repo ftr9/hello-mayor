@@ -7,12 +7,96 @@ import CommentCard from '../../../../components/cards/Comment';
 import { Avatar, FAB, Icon } from '@rneui/themed';
 import InputField from '../../../../components/InputField/InputField';
 import IconBtn from '../../../../components/Button/IconBtn';
+import useUserStore from '../../../../store/useUserStore';
+import useCommentsStore from '../../../../store/useCommentsStore';
+import {
+  query,
+  where,
+  orderBy,
+  Timestamp,
+  addDoc,
+  updateDoc,
+  increment,
+} from 'firebase/firestore';
+import {
+  getPostCommentsCollectionRef,
+  getPostRefDoc,
+} from '../../../../config/firebaseRefs';
+
+import { useEffect, useState } from 'react';
+import showCancelableAlert from '../../../../utils/showCancelableAlert';
+import NotFound from '../../../../components/NotFound/NotFound';
+import LoadingIndicator from '../../../../components/loading/LoadingIndicator';
 
 const Comments = () => {
+  const { user } = useUserStore();
   const { postId } = useSearchParams();
-  const router = useRouter();
+  const [comment, setComments] = useState('');
+  const { comments, isFetchingComments, fetchComments } = useCommentsStore();
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetchComments(
+      'comments',
+      'isFetchingComments',
+      query(getPostCommentsCollectionRef(postId), orderBy('createdAt', 'desc'))
+    );
+  }, []);
+
   const onBackPressHandle = () => {
     router.back();
+  };
+  const onCommentsChange = val => {
+    setComments(val);
+  };
+
+  const submitClickHandle = async () => {
+    try {
+      //update the comments
+      if (comment.length > 0) {
+        let commentFormat = {
+          content: comment,
+          createdAt: Timestamp.now(),
+          profile: {
+            avatar: user.avatar,
+            username: user.username,
+          },
+          uId: user.id,
+        };
+        setSubmitting(true);
+        //1) add the comments
+        await addDoc(getPostCommentsCollectionRef(postId), commentFormat);
+
+        //2) increment the comments field
+        await updateDoc(getPostRefDoc(postId), {
+          comments: increment(1),
+        });
+
+        //3) clear comments field
+        setComments('');
+
+        //4) cancelable alert
+        showCancelableAlert(
+          'Added Comments',
+          'your comment was added successfully'
+        );
+
+        //5) fetch the comments again
+        fetchComments(
+          'comments',
+          'isFetchingComments',
+          query(
+            getPostCommentsCollectionRef(postId),
+            orderBy('createdAt', 'desc')
+          )
+        );
+      }
+    } catch (err) {
+      console.log(err);
+      alert('something went wrong please try again !!!');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!postId) {
@@ -30,27 +114,41 @@ const Comments = () => {
     );
   }
 
+  if (isFetchingComments && comments.length === 0) {
+    return <LoadingIndicator text="Loading you comments.." />;
+  }
+
   return (
     <View className="flex-1">
-      <ScrollView className="flex-1">
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentCard />
-      </ScrollView>
+      {comments.length === 0 ? (
+        <NotFound title="No comments found" />
+      ) : (
+        <ScrollView className="flex-1">
+          {comments.map(comment => (
+            <CommentCard
+              avatar={comment.profile.avatar}
+              username={comment.profile.username}
+              content={comment.content}
+              createdAt={new Date(comment.createdAt).toLocaleDateString()}
+              key={comment.id}
+            />
+          ))}
+        </ScrollView>
+      )}
 
       <View className="flex-row items-center  border-txtSecondary">
         <View className="flex-1 translate-y-3">
-          <InputField label="" placeholder="Enter your comment" />
+          <InputField
+            onValueChange={onCommentsChange}
+            label=""
+            value={comment}
+            placeholder="Enter your comment"
+          />
         </View>
         <View className="mr-2">
           <FAB
+            loading={isSubmitting}
+            onPress={submitClickHandle}
             color="red"
             icon={{ name: 'chevron-forward', type: 'ionicon', color: 'white' }}
             containerStyle={{ backgroundColor: 'red' }}

@@ -3,25 +3,13 @@ import React, { useState } from 'react';
 import Post from '@components/cards/Post';
 import { FAB } from '@rneui/themed';
 import { useRouter } from 'expo-router';
-import AllStatusTabBar from '../../../../components/Tabs/AllStatusTabBar';
-
-import { faker } from '@faker-js/faker';
-
-const PendingPage = () => {
-  return <Text>This is Admins pending page</Text>;
-};
-
-const ProgressPage = () => {
-  return <Text>This is admin progress page</Text>;
-};
-
-const HoldPage = () => {
-  return <Text>This is admin hold page</Text>;
-};
-
-const CompletedPage = () => {
-  return <Text>This is admin completed page</Text>;
-};
+import AllStatusTabBar from '@components/Tabs/AllStatusTabBar';
+import {
+  PendingPage,
+  ProgressPage,
+  HoldPage,
+  CompletedPage,
+} from '@components/pages/admin/feed';
 
 const Feed = () => {
   const [currentPage, setCurrentPage] = useState(0);

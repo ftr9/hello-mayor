@@ -1,33 +1,60 @@
-import { View, Text } from 'react-native';
+import { View, Text, ActivityIndicator, RefreshControl } from 'react-native';
 import React from 'react';
 
 import User from '@components/cards/User';
-import { faker } from '@faker-js/faker';
+import useCitizensStore from '../../../../store/useCitizensStore';
 import { FlashList } from '@shopify/flash-list';
-
-const users = new Array(100).fill('a').map((_, index) => ({
-  id: index,
-  name: faker.person.fullName(),
-  email: faker.internet.email(),
-  imageUrl: faker.internet.avatar(),
-}));
+import { useEffect } from 'react';
+import LoadingIndicator from '@components/loading/LoadingIndicator';
+import NotFound from '@components/NotFound/NotFound';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from '@constants/colors';
+import { userCollectionRef } from '../../../../config/firebaseRefs';
+import { query, orderBy } from 'firebase/firestore';
+import FlashListDataRender from '../../../../components/List/FlashListDataRender';
 
 const Users = () => {
+  const { citizens, fetchCitizens, isFetchingCitizens } = useCitizensStore();
+  useEffect(() => {
+    fetchCitizens(
+      'citizens',
+      'isFetchingCitizens',
+      query(userCollectionRef, orderBy('username', 'asc'))
+    );
+  }, []);
+
+  const pullToRefreshHandle = async () => {
+    await fetchCitizens(
+      'citizens',
+      'isFetchingCitizens',
+      query(userCollectionRef, orderBy('username', 'asc'))
+    );
+  };
+
+  if (isFetchingCitizens && citizens.length === 0) {
+    return <LoadingIndicator />;
+  }
+
+  if (!isFetchingCitizens && citizens.length === 0) {
+    return <NotFound />;
+  }
+
   return (
     <View className=" flex-1 px-2">
-      <FlashList
-        className="flex-1"
-        data={users}
+      <FlashListDataRender
+        isRefreshing={isFetchingCitizens}
+        onRefresh={pullToRefreshHandle}
+        data={citizens}
         renderItem={({ item }) => {
           return (
             <User
-              username={item.name}
+              id={item.id}
+              username={item.username}
               email={item.email}
-              imageUrl={item.imageUrl}
+              imageUrl={item.avatar}
+              isAdmin={item.isAdmin}
             />
           );
         }}
-        estimatedItemSize={100}
       />
     </View>
   );

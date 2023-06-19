@@ -7,7 +7,14 @@ const useUserStore = create(
       user: null,
       setUser: userCredentials => {
         set(state => {
-          state.user = userCredentials;
+          state.user = state.user
+            ? { ...state.user, ...userCredentials }
+            : userCredentials;
+        });
+      },
+      removeUser: () => {
+        set(state => {
+          state.user = null;
         });
       },
     };
