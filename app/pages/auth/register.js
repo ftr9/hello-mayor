@@ -144,6 +144,7 @@ const Register = () => {
         hasError={errors?.password}
         errorMessage={errors?.password?.message}
         name={'password'}
+        secureTextEntry
       />
 
       <View className="px-3">
