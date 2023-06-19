@@ -31,6 +31,7 @@ const TextFields = ({ control, errors }) => {
         name={'description'}
         hasError={errors?.description}
         errorMessage={errors?.description?.message}
+        multiline
       />
       <ControlledInputField
         rules={{
