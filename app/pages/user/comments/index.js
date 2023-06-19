@@ -6,7 +6,6 @@ import { ScrollView } from 'react-native';
 import CommentCard from '../../../../components/cards/Comment';
 import { Avatar, FAB, Icon } from '@rneui/themed';
 import InputField from '../../../../components/InputField/InputField';
-import IconBtn from '../../../../components/Button/IconBtn';
 import useUserStore from '../../../../store/useUserStore';
 import useCommentsStore from '../../../../store/useCommentsStore';
 import {

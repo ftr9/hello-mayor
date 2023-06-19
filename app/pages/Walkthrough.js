@@ -84,7 +84,7 @@ WalkThrough.PageIndicatorAndNextButton = ({ setCurrentPage, currentPage }) => {
   const router = useRouter();
   const nextClickHandle = async () => {
     if (currentPage === 3) {
-      await AsyncStorage.setItem('isWalkThroughPageSeen', true);
+      //0await AsyncStorage.setItem('isWalkThroughPageSeen', true);
       router.push('/pages/auth/register');
       return;
     }

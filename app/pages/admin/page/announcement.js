@@ -1,11 +1,11 @@
 import React from 'react';
 import useAnnouncementStore from '../../../../store/useAnnouncementStore';
 import { useEffect } from 'react';
-import { adminPostCollectionRef } from '../../../../config/firebaseRefs';
-import LoadingIndicator from '../../../../components/loading/LoadingIndicator';
-import NotFound from '../../../../components/NotFound/NotFound';
-import FlashListDataRender from '../../../../components/List/FlashListDataRender';
-import Post from '../../../../components/cards/Post';
+import { adminPostCollectionRef } from '@config/firebaseRefs';
+import LoadingIndicator from '@components/loading/LoadingIndicator';
+import NotFound from '@components/NotFound/NotFound';
+import FlashListDataRender from '@components/List/FlashListDataRender';
+import Post from '@components/cards/Post';
 /**
  *  notices: [],
     isFetchingNotice: false,

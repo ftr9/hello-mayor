@@ -14,7 +14,7 @@ const myTeams = [
   {
     id: 2,
     name: 'Sushrina Dhakal',
-    role: 'QA engineer',
+    role: 'UI/UX designer',
     imgUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkS0YAVrqDp8u-zsuE453BqaSSpj0HUG_mDQ&usqp=CAU',
   },
@@ -41,7 +41,7 @@ const myTeams = [
   },
   {
     id: 6,
-    name: 'Bigesh Gurung',
+    name: 'Bibek Gurung',
     role: 'QA engineer',
     imgUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUWDO1su5xHOwMnyDz4SpGAuMjZPbSHwwJ4Q&usqp=CAU',
