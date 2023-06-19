@@ -26,8 +26,8 @@ const Login = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      emailAddress: 'balen@gmail.com',
-      password: 'balenL0C0',
+      emailAddress: '',
+      password: '',
     },
   });
 
@@ -101,6 +101,7 @@ const Login = () => {
         placeholder={'Enter your password'}
         hasError={errors?.password}
         errorMessage={errors?.password?.message}
+        secureTextEntry
         name={'password'}
       />
 
