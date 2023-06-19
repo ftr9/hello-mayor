@@ -5,6 +5,10 @@ import { usePathname } from 'expo-router';
 import HeaderDashboard from './HeaderDashboard';
 
 const pagesContents = {
+  '/pages': {
+    title: 'Hello Mayor',
+    content: 'post your issues.',
+  },
   '/pages/Walkthrough': {
     title: 'WalkThrough',
     content: 'Understand how the process works.',
@@ -65,7 +69,8 @@ const HeaderView = () => {
   const isLogin_WalkThrough_RegisterPage =
     path.includes('Walkthrough') ||
     path.includes('login') ||
-    path.includes('register');
+    path.includes('register') ||
+    path === '/pages';
 
   return (
     <View className="px-2 py-5 bg-bgSecondary">
