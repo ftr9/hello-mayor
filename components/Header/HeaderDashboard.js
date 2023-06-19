@@ -73,12 +73,6 @@ const HeaderDashboard = ({ title, content }) => {
           <NotificationCard />
           <NotificationCard />
           <NotificationCard />
-          <NotificationCard />
-          <NotificationCard />
-          <NotificationCard />
-          <NotificationCard />
-          <NotificationCard />
-          <NotificationCard />
         </ScrollView>
       </ListModal>
     </>

@@ -7,18 +7,12 @@ import { getUserRefDoc } from '../../config/firebaseRefs';
 import { getDoc } from 'firebase/firestore';
 import useUserStore from '../../store/useUserStore';
 import LoadingIndicator from '../../components/loading/LoadingIndicator';
-import AppConstant from 'expo-constants';
 
 const RootPage = () => {
   const router = useRouter();
   const { setUser } = useUserStore();
 
   useEffect(() => {
-    const checkAppVersion = () => {
-      alert(
-        `${AppConstant.manifest.version} ${AppConstant.manifest.sdkVersion}`
-      );
-    };
     const checkAuthStatus = async () => {
       //1) get data from async storage
       const asyncStorageData = await AsyncStorage.multiGet([
@@ -57,7 +51,7 @@ const RootPage = () => {
       router.push('/pages/Walkthrough');
     };
     ////check the auth status here
-    checkAppVersion();
+
     checkAuthStatus();
   }, []);
 
