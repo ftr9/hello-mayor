@@ -3,6 +3,9 @@ import { ref } from 'firebase/storage';
 import { db, storage } from './firebase';
 export const userCollection = collection(db, 'user');
 
+//app version
+export const appVersionDocRef = doc(db, 'appVersion', '4pnZpSM4R1jAlZYUkVaL');
+
 //user
 export const getUserRefDoc = id => {
   return doc(db, 'user', id);
