@@ -1,5 +1,5 @@
-import { View, ScrollView, Alert } from 'react-native';
-import React, { useState } from 'react';
+import { View, ScrollView, Alert, BackHandler } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import P from '@components/Typography/P';
 import IconBtn from '@components/Button/IconBtn';
 import { Link } from 'expo-router';
@@ -23,6 +23,7 @@ import * as Crypto from 'expo-crypto';
 import getValidImageExtension from '@utils/checkAndGetValidImgExt';
 import uploadSingleImg from '../../../utils/uploadSingleImg';
 import AddImage from '../../../components/cards/AddImage';
+import exitApp from '../../../utils/exitApp';
 
 const Register = () => {
   const router = useRouter();
@@ -41,6 +42,13 @@ const Register = () => {
       password: '',
     },
   });
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', exitApp);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', exitApp);
+    };
+  }, []);
 
   const formSubmitHandle = async data => {
     try {

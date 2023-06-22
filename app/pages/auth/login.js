@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, BackHandler } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import InputField from '@components/InputField/InputField';
 import IconBtn from '@components/Button/IconBtn';
 import P from '@components/Typography/P';
@@ -14,11 +14,12 @@ import { getDoc } from 'firebase/firestore';
 import { getUserRefDoc } from '../../../config/firebaseRefs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useUserStore from '../../../store/useUserStore';
+import exitApp from '../../../utils/exitApp';
 
 const Login = () => {
   const router = useRouter();
   const [isSubmitting, setSubmitting] = useState(false);
-  const { setUser, user } = useUserStore();
+  const { setUser } = useUserStore();
   const {
     control,
     handleSubmit,
@@ -30,6 +31,13 @@ const Login = () => {
       password: '',
     },
   });
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', exitApp);
+    return () => {
+      BackHandler.removeEventListener(exitApp);
+    };
+  }, []);
 
   const loginBtnClickHandle = async data => {
     try {
@@ -63,7 +71,6 @@ const Login = () => {
           err.code === 'auth/user-not-found' ||
           err.code === 'auth/wrong-password'
         ) {
-          console.log('this part');
           setError('emailAddress', {
             type: 'invalid Email address',
             message: '* invalid email address or password',

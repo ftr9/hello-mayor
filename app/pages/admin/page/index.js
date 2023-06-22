@@ -1,6 +1,5 @@
-import { View, Text, ScrollView } from 'react-native';
-import React, { useState } from 'react';
-import Post from '@components/cards/Post';
+import { View, BackHandler } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { FAB } from '@rneui/themed';
 import { useRouter } from 'expo-router';
 import AllStatusTabBar from '@components/Tabs/AllStatusTabBar';
@@ -10,10 +9,19 @@ import {
   HoldPage,
   CompletedPage,
 } from '@components/pages/admin/feed';
+import exitApp from '../../../../utils/exitApp';
 
 const Feed = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', exitApp);
+    return () => {
+      BackHandler.addEventListener('hardwareBackPress', exitApp);
+    };
+  }, []);
+
   const createPostClickHandle = () => {
     router.push('/pages/admin/createpost');
   };

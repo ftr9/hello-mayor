@@ -48,14 +48,21 @@ const Profile = () => {
     try {
       let newUploadImgUrl = null;
       setUpdating(true);
-      //for image
-      if (avatar !== data.avatar && avatar) {
-        //1) delete older image
-        const avatarFileName = data?.avatar?.match(/%(.*?)\?/)[1];
-        const uploadedImgName = avatarFileName.slice(2, avatarFileName.length);
 
-        const uploadedImgRef = getprofileRefStorage(uploadedImgName);
-        await deleteObject(uploadedImgRef);
+      //for image
+      if (avatar) {
+        //1) delete older image
+        if (data.avatar) {
+          const avatarFileName = data.avatar?.match(/%(.*?)\?/)[1];
+
+          const uploadedImgName = avatarFileName.slice(
+            2,
+            avatarFileName.length
+          );
+
+          const uploadedImgRef = getprofileRefStorage(uploadedImgName);
+          await deleteObject(uploadedImgRef);
+        }
 
         //2 upload new image
         newUploadImgUrl = await uploadSingleImg(avatar);
