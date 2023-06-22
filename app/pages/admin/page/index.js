@@ -18,7 +18,7 @@ const Feed = () => {
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', exitApp);
     return () => {
-      BackHandler.addEventListener('hardwareBackPress', exitApp);
+      BackHandler.removeEventListener('hardwareBackPress', exitApp);
     };
   }, []);
 

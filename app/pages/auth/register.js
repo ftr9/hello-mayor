@@ -13,14 +13,16 @@ import {
 } from '@constants/textInputRules';
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc } from 'firebase/firestore';
+import { addDoc, setDoc } from 'firebase/firestore';
 import { auth } from '@config/firebase';
-import { getprofileRefStorage, getUserRefDoc } from '@config/firebaseRefs';
+import {
+  getprofileRefStorage,
+  getUserRefDoc,
+  postCounterColUserRef,
+} from '@config/firebaseRefs';
 import { FirebaseError } from 'firebase/app';
 import { useRouter } from 'expo-router';
-import { getDownloadURL, uploadBytes } from 'firebase/storage';
-import * as Crypto from 'expo-crypto';
-import getValidImageExtension from '@utils/checkAndGetValidImgExt';
+
 import uploadSingleImg from '../../../utils/uploadSingleImg';
 import AddImage from '../../../components/cards/AddImage';
 import exitApp from '../../../utils/exitApp';

@@ -16,8 +16,11 @@ import { useState } from 'react';
 import IconBtn from '../../components/Button/IconBtn';
 import ControlledInputField from '../InputField/ControlledInputField';
 import { useForm } from 'react-hook-form';
-import { getPostRefDoc } from '../../config/firebaseRefs';
-import { deleteDoc } from 'firebase/firestore';
+import {
+  getPostRefDoc,
+  totalPostCounterDocRef,
+} from '../../config/firebaseRefs';
+import { deleteDoc, increment } from 'firebase/firestore';
 import showCancelableAlert from '../../utils/showCancelableAlert';
 import { postCollectionRef } from '../../config/firebaseRefs';
 import { query, where, orderBy, updateDoc } from 'firebase/firestore';
@@ -110,6 +113,11 @@ Post.PostTitle = ({
 };
 
 Post.LikesAndComment = ({ postId, commentsLength }) => {
+  const router = useRouter();
+  const viewAllCommentsHandle = () => {
+    router.push('/pages/user/comments?postId=${postId}');
+  };
+
   return (
     <View className="mb-2">
       <View className="flex-row justify-between items-center mt-4 mb-3">
@@ -118,11 +126,11 @@ Post.LikesAndComment = ({ postId, commentsLength }) => {
         </View>
         <P type="regular">{commentsLength} comments</P>
       </View>
-      <Link href={`/pages/user/comments?postId=${postId}`}>
+      <TouchableOpacity onPress={viewAllCommentsHandle}>
         <P size={12} type="regular" extraStyle="text-txtPlaceHolder">
           View all comments
         </P>
-      </Link>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -205,6 +213,48 @@ Post.Header = ({
 };
 
 Post.changeStatus = ({ postId, fetchMyPosts, dataPropertyName, status }) => {
+  const searchQuery = query(
+    postCollectionRef,
+    where('status', '==', status),
+    orderBy('createdAt', 'desc')
+  );
+
+  const decrementByStatus = async () => {
+    if (status === 'PROGRESS') {
+      await updateDoc(totalPostCounterDocRef, {
+        totalProgressPosts: increment(-1),
+      });
+    }
+    if (status === 'HOLD') {
+      await updateDoc(totalPostCounterDocRef, {
+        totalHoldPosts: increment(-1),
+      });
+    }
+    if (status === 'COMPLETED') {
+      await updateDoc(totalPostCounterDocRef, {
+        totalCompletedPosts: increment(-1),
+      });
+    }
+  };
+
+  const incrementBySelection = async selectedStatus => {
+    if (selectedStatus === 'PROGRESS') {
+      await updateDoc(totalPostCounterDocRef, {
+        totalProgressPosts: increment(1),
+      });
+    }
+    if (selectedStatus === 'HOLD') {
+      await updateDoc(totalPostCounterDocRef, {
+        totalHoldPosts: increment(1),
+      });
+    }
+    if (selectedStatus === 'COMPLETED') {
+      await updateDoc(totalPostCounterDocRef, {
+        totalCompletedPosts: increment(1),
+      });
+    }
+  };
+
   const statusChangeHandle = () => {
     Alert.alert(
       'Change Status',
@@ -213,55 +263,69 @@ Post.changeStatus = ({ postId, fetchMyPosts, dataPropertyName, status }) => {
         {
           text: 'progress',
           onPress: async () => {
+            if (status === 'PROGRESS') return;
+            //1) update the post status
             await updateDoc(getPostRefDoc(postId), {
               status: 'PROGRESS',
             });
+            //2) update the total counter
+            await decrementByStatus();
+            await incrementBySelection('PROGRESS');
+            //2) fetch the data again
             await fetchMyPosts(
               dataPropertyName,
               'isFetchingPosts',
-              query(
-                postCollectionRef,
-                where('status', '==', status),
-                orderBy('createdAt', 'desc')
-              )
+              searchQuery
             );
           },
         },
         {
           text: 'hold',
           onPress: async () => {
+            if (status === 'HOLD') return;
+
+            //1) update the post status
             await updateDoc(getPostRefDoc(postId), {
               status: 'HOLD',
             });
+            //2) update the total counter
+            await decrementByStatus();
+            await incrementBySelection('HOLD');
+
+            //3) fetch the data again
             await fetchMyPosts(
               dataPropertyName,
               'isFetchingPosts',
-              query(
-                postCollectionRef,
-                where('status', '==', status),
-                orderBy('createdAt', 'desc')
-              )
+              searchQuery
             );
           },
         },
         {
           text: 'completed',
           onPress: async () => {
+            if (status === 'COMPLETED') return;
+
+            //1) update the posts status
             await updateDoc(getPostRefDoc(postId), {
               status: 'COMPLETED',
             });
+
+            //2) update the total counter
+            await decrementByStatus();
+            await incrementBySelection('COMPLETED');
+
+            //3) fetch the data again
             await fetchMyPosts(
               dataPropertyName,
               'isFetchingPosts',
-              query(
-                postCollectionRef,
-                where('status', '==', status),
-                orderBy('createdAt', 'desc')
-              )
+              searchQuery
             );
           },
         },
-      ]
+      ],
+      {
+        cancelable: true,
+      }
     );
   };
 
@@ -291,6 +355,9 @@ Post.ApproveSection = ({ postId, fetchMyPosts }) => {
   const declineClickHandle = handleSubmit(async data => {
     setDeclining(true);
     await deleteDoc(getPostRefDoc(postId));
+    await updateDoc(totalPostCounterDocRef, {
+      totalPendingPosts: increment(-1),
+    });
     setDeclining(false);
     showCancelableAlert('Decline successfull', 'the post was declined');
     await fetchMyPosts(
@@ -306,10 +373,20 @@ Post.ApproveSection = ({ postId, fetchMyPosts }) => {
 
   const approveClickHandle = async () => {
     setApproving(true);
-    console.log('this is called');
+    //1) update the post to progress
     await updateDoc(getPostRefDoc(postId), {
       status: 'PROGRESS',
     });
+
+    //2) update the total counter posts
+    await updateDoc(totalPostCounterDocRef, {
+      totalPendingPosts: increment(-1),
+    });
+    await updateDoc(totalPostCounterDocRef, {
+      totalProgressPosts: increment(1),
+    });
+
+    //2) fetch the posts again
     await fetchMyPosts(
       'pendingPosts',
       'isFetchingPosts',

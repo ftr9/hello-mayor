@@ -13,8 +13,11 @@ import useMyPostsStore, {
   useMyPostStoreProps,
 } from '../../../../store/useMyPosts';
 import exitApp from '@utils/exitApp';
+import useSubscribePostCounter from '../../../../hooks/useSubscribePostCounter';
 
 import RenderPostsHoc from '@components/Hoc/RenderPostsHoc';
+import useUserStore from '../../../../store/useUserStore';
+import formatTotalPostsNum from '../../../../utils/formatTotalPostsNum';
 
 const returnColorByActiveTab = index => {
   if (index === 0) {
@@ -53,7 +56,6 @@ const CompletedPage = RenderPostsHoc(
 );
 const Posts = () => {
   const [index, setIndex] = React.useState(0);
-  const [isDraggingUp, setDraggingUp] = useState(false);
   const router = useRouter();
   const createPostClickHandle = () => {
     router.push('/pages/user/createpost');
@@ -75,7 +77,7 @@ const Posts = () => {
         style={{
           position: 'absolute',
           zIndex: 1000,
-          top: isDraggingUp ? '8%' : '88%',
+          top: '88%',
           right: 20,
         }}
         containerStyle={{
@@ -84,7 +86,7 @@ const Posts = () => {
       />
       <Posts.Tabs index={index} setIndex={setIndex} />
 
-      {index === 0 && <ProgressPage setDraggingUp={setDraggingUp} />}
+      {index === 0 && <ProgressPage />}
       {index === 1 && <HoldPage />}
       {index === 2 && <CompletedPage />}
     </>
@@ -92,6 +94,10 @@ const Posts = () => {
 };
 
 Posts.Tabs = ({ index, setIndex }) => {
+  const { user } = useUserStore();
+
+  const { postsCounterData } = useSubscribePostCounter(user);
+
   return (
     <Tab
       dense
@@ -125,7 +131,7 @@ Posts.Tabs = ({ index, setIndex }) => {
               backgroundColor: PROGRESS_COLOR,
               marginLeft: 8,
             }}
-            value="0"
+            value={formatTotalPostsNum(postsCounterData?.totalProgressPosts)}
           />
         )}
       />
@@ -137,7 +143,7 @@ Posts.Tabs = ({ index, setIndex }) => {
               backgroundColor: SECONDARY_COLOR,
               marginLeft: 8,
             }}
-            value="0"
+            value={formatTotalPostsNum(postsCounterData?.totalHoldPosts)}
           />
         )}
       />
@@ -149,7 +155,7 @@ Posts.Tabs = ({ index, setIndex }) => {
               backgroundColor: COMPLETED_COLOR,
               marginLeft: 8,
             }}
-            value="0"
+            value={formatTotalPostsNum(postsCounterData?.totalCompletedPosts)}
           />
         )}
       />

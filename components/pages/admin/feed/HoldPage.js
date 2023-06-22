@@ -66,6 +66,7 @@ const HoldPage = () => {
               postId={item.id}
               commentsLength={item.comments}
             />
+
             <Post.changeStatus
               postId={item.id}
               fetchMyPosts={fetchMyPosts}

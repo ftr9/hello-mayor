@@ -1,14 +1,16 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { UBUNTU_REGULAR } from '@constants/typography';
 import { Badge, Tab } from '@rneui/themed';
-
 import {
   PROGRESS_COLOR,
   COMPLETED_COLOR,
   TERTIARY_COLOR,
   SECONDARY_COLOR,
 } from '@constants/colors';
+import useUserStore from '../../store/useUserStore';
+import useSubscribePostCounter from '../../hooks/useSubscribePostCounter';
+import formatTotalPostsNum from '../../utils/formatTotalPostsNum';
 
 const getColorByActiveTab = index => {
   if (index === 0) return TERTIARY_COLOR;
@@ -18,6 +20,11 @@ const getColorByActiveTab = index => {
 };
 
 const AllStatusTabBar = ({ currentTab, onTabChange }) => {
+  const { user } = useUserStore();
+  const { postsCounterData } = useSubscribePostCounter(user);
+
+  const isUserAdminAndPostCounterExist = user?.isAdmin && postsCounterData;
+
   return (
     <Tab
       value={currentTab}
@@ -43,13 +50,15 @@ const AllStatusTabBar = ({ currentTab, onTabChange }) => {
       <Tab.Item
         icon={() => {
           return (
-            <Badge
-              badgeStyle={{
-                backgroundColor: TERTIARY_COLOR,
-                marginLeft: 5,
-              }}
-              value="0"
-            />
+            isUserAdminAndPostCounterExist && (
+              <Badge
+                badgeStyle={{
+                  backgroundColor: TERTIARY_COLOR,
+                  marginLeft: 5,
+                }}
+                value={formatTotalPostsNum(postsCounterData.totalPendingPosts)}
+              />
+            )
           );
         }}
         title={'Pending'}
@@ -57,13 +66,15 @@ const AllStatusTabBar = ({ currentTab, onTabChange }) => {
       <Tab.Item
         icon={() => {
           return (
-            <Badge
-              badgeStyle={{
-                backgroundColor: PROGRESS_COLOR,
-                marginLeft: 5,
-              }}
-              value="0"
-            />
+            isUserAdminAndPostCounterExist && (
+              <Badge
+                badgeStyle={{
+                  backgroundColor: PROGRESS_COLOR,
+                  marginLeft: 5,
+                }}
+                value={formatTotalPostsNum(postsCounterData.totalProgressPosts)}
+              />
+            )
           );
         }}
         title={'Progress'}
@@ -71,13 +82,15 @@ const AllStatusTabBar = ({ currentTab, onTabChange }) => {
       <Tab.Item
         icon={() => {
           return (
-            <Badge
-              badgeStyle={{
-                backgroundColor: SECONDARY_COLOR,
-                marginLeft: 5,
-              }}
-              value="0"
-            />
+            isUserAdminAndPostCounterExist && (
+              <Badge
+                badgeStyle={{
+                  backgroundColor: SECONDARY_COLOR,
+                  marginLeft: 5,
+                }}
+                value={formatTotalPostsNum(postsCounterData.totalHoldPosts)}
+              />
+            )
           );
         }}
         title={'Hold'}
@@ -85,13 +98,17 @@ const AllStatusTabBar = ({ currentTab, onTabChange }) => {
       <Tab.Item
         icon={() => {
           return (
-            <Badge
-              badgeStyle={{
-                backgroundColor: COMPLETED_COLOR,
-                marginLeft: 5,
-              }}
-              value="0"
-            />
+            isUserAdminAndPostCounterExist && (
+              <Badge
+                badgeStyle={{
+                  backgroundColor: COMPLETED_COLOR,
+                  marginLeft: 5,
+                }}
+                value={formatTotalPostsNum(
+                  postsCounterData.totalCompletedPosts
+                )}
+              />
+            )
           );
         }}
         title={'Completed'}

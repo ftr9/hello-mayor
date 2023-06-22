@@ -12,6 +12,13 @@ export const getUserRefDoc = id => {
 };
 export const userCollectionRef = collection(db, 'user');
 
+//post counter
+export const totalPostCounterDocRef = doc(
+  db,
+  'totalPostsCounter',
+  'jQ3ZptAmc2J40l2TjDdV'
+);
+
 //post
 export const postCollectionRef = collection(db, 'posts');
 export const getPostRefDoc = id => {

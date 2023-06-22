@@ -34,6 +34,10 @@ const RootPage = () => {
       //4) if user found then parse the value get the id and fetch result
       persistedUser = JSON.parse(persistedUser);
       const fetchedUserById = await getDoc(getUserRefDoc(persistedUser.id));
+      if (!fetchedUserById.exists()) {
+        router.push('/pages/auth/login');
+        return;
+      }
 
       //5) upload global store
       setUser(fetchedUserById.data());

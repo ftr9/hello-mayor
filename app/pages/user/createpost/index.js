@@ -9,8 +9,11 @@ import {
 } from '../../../../components/pages/createpost';
 import { useState } from 'react';
 import uploadSingleImg from '../../../../utils/uploadSingleImg';
-import { postCollectionRef } from '../../../../config/firebaseRefs';
-import { addDoc, Timestamp } from 'firebase/firestore';
+import {
+  postCollectionRef,
+  totalPostCounterDocRef,
+} from '../../../../config/firebaseRefs';
+import { addDoc, Timestamp, updateDoc, increment } from 'firebase/firestore';
 import useUserStore from '../../../../store/useUserStore';
 import showCancelableAlert from '../../../../utils/showCancelableAlert';
 import { useRouter } from 'expo-router';
@@ -63,7 +66,14 @@ const CreatePost = () => {
         comments: 0,
       };
 
+      //2) create post to posts collection
       await addDoc(postCollectionRef, postDataFormat);
+
+      //3) update total posts counter
+      await updateDoc(totalPostCounterDocRef, {
+        totalPendingPosts: increment(1),
+      });
+
       Alert.alert(
         'Successfully submitted',
         'your issue was submitted successfully please be patient to get response',
