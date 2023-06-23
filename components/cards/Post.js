@@ -10,8 +10,13 @@ import {
 } from 'react-native';
 import P from '@components/Typography/P';
 import { Avatar, Badge, Icon, Divider } from '@rneui/themed';
-import { SECONDARY_COLOR } from '@constants/colors';
-import { Link, useRouter } from 'expo-router';
+import {
+  SECONDARY_COLOR,
+  COMPLETED_COLOR,
+  TERTIARY_COLOR,
+  PROGRESS_COLOR,
+} from '@constants/colors';
+import { Link, useRouter, usePathname } from 'expo-router';
 import { useState } from 'react';
 import IconBtn from '../../components/Button/IconBtn';
 import ControlledInputField from '../InputField/ControlledInputField';
@@ -34,6 +39,7 @@ import { query, where, orderBy, updateDoc } from 'firebase/firestore';
  * 5. images
  * 6.postLike and comment o approve
  */
+
 const Post = ({ children }) => {
   return (
     <View className=" my-1  px-3 border-b-[2px] py-2 border-txtPlaceHolder">
@@ -113,9 +119,15 @@ Post.PostTitle = ({
 };
 
 Post.LikesAndComment = ({ postId, commentsLength }) => {
+  const path = usePathname();
+
   const router = useRouter();
   const viewAllCommentsHandle = () => {
-    router.push(`/pages/user/comments?postId=${postId}`);
+    if (path.includes('announcement')) {
+      router.push(`/pages/user/comments/announcements?postId=${postId}`);
+      return;
+    }
+    router.push(`/pages/user/comments?postId=${postId}&isAdminPost=${false}`);
   };
 
   return (
@@ -176,6 +188,21 @@ Post.Header = ({
   isNotice = false,
   status = 'pending',
 }) => {
+  const _getColorByStatus = () => {
+    if (status === 'PENDING') {
+      return TERTIARY_COLOR;
+    }
+    if (status === 'PROGRESS') {
+      return PROGRESS_COLOR;
+    }
+    if (status === 'HOLD') {
+      return SECONDARY_COLOR;
+    }
+    if (status === 'COMPLETED') {
+      return COMPLETED_COLOR;
+    }
+  };
+
   return (
     <View className="flex-row items-center  justify-between">
       {/**Right */}
@@ -202,7 +229,7 @@ Post.Header = ({
           <Badge
             badgeStyle={{
               marginRight: 5,
-              backgroundColor: 'orange',
+              backgroundColor: _getColorByStatus(),
             }}
           />
           <P size={12}>{status?.toLowerCase()}</P>
