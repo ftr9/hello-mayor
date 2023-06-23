@@ -130,6 +130,10 @@ const Comments = () => {
               content={comment.content}
               createdAt={new Date(comment.createdAt).toLocaleDateString()}
               key={comment.id}
+              uId={comment.uId}
+              id={comment.id}
+              fetchComments={fetchComments}
+              postId={postId}
             />
           ))}
         </ScrollView>

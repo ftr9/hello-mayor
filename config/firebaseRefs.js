@@ -31,6 +31,10 @@ export const getPostCommentsCollectionRef = postId => {
   return collection(db, `posts/${postId}/comments`);
 };
 
+export const getPostCommentDocRef = (commentId, postId) => {
+  return doc(db, `posts/${postId}/comments`, commentId);
+};
+
 //storage
 export const getprofileRefStorage = filename => {
   return ref(storage, 'profile/' + filename);

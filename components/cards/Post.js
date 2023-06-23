@@ -115,7 +115,7 @@ Post.PostTitle = ({
 Post.LikesAndComment = ({ postId, commentsLength }) => {
   const router = useRouter();
   const viewAllCommentsHandle = () => {
-    router.push('/pages/user/comments?postId=${postId}');
+    router.push(`/pages/user/comments?postId=${postId}`);
   };
 
   return (

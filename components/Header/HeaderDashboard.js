@@ -49,11 +49,13 @@ const HeaderDashboard = ({ title, content }) => {
           <Avatar
             size={45}
             onPress={profileClickHandle}
-            source={{
-              uri: user?.avatar,
-            }}
+            source={
+              user?.avatar && {
+                uri: user?.avatar,
+              }
+            }
             rounded
-            title="RA"
+            title={user?.username?.slice(0, 2)}
             titleStyle={{
               color: 'black',
               fontFamily: UBUNTU_LIGHT,
