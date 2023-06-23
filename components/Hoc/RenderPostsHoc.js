@@ -56,6 +56,7 @@ const RenderPostsHoc = (
                 imageUrl={item.profile.avatar}
                 username={item.profile.username}
                 publishedDate={new Date(item.createdAt).toLocaleDateString()}
+                status={status}
               />
               <Post.LocationText fullLocation={item.fullLocation} />
               <Post.PostTitle
