@@ -61,6 +61,10 @@ const pagesContents = {
     title: 'Notify',
     content: 'Make some announcements.',
   },
+  '/pages/user/comments/announcements': {
+    title: 'Comments',
+    content: 'Announcement comments',
+  },
 };
 
 const HeaderView = () => {
