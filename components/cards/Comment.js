@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  ToastAndroid,
-} from 'react-native';
+import { View, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
 import React from 'react';
 import { Avatar } from '@rneui/themed';
 import P from '../../components/Typography/P';
@@ -21,8 +15,10 @@ import {
   getPostCommentsCollectionRef,
   getPostCommentDocRef,
   getPostRefDoc,
+  adminPostDocRef,
+  getAdminPostCommentDocRef,
+  getAdminPostCommentsCollectionRef,
 } from '../../config/firebaseRefs';
-import showCancelableAlert from '../../utils/showCancelableAlert';
 
 const Comment = ({
   avatar,
@@ -33,8 +29,45 @@ const Comment = ({
   id,
   fetchComments,
   postId,
+  isAdminPost,
 }) => {
   const { user } = useUserStore();
+
+  const _deleteCommentClickHandle = async () => {
+    let commentDocRef;
+    let postDocRef;
+    let commentsCollectionRef;
+
+    if (!isAdminPost) {
+      commentDocRef = getPostCommentDocRef(id, postId);
+      postDocRef = getPostRefDoc(postId);
+      commentsCollectionRef = getPostCommentsCollectionRef(postId);
+    } else {
+      commentDocRef = getAdminPostCommentDocRef(id, postId);
+      postDocRef = adminPostDocRef(postId);
+      commentsCollectionRef = getAdminPostCommentsCollectionRef(postId);
+    }
+    try {
+      //1) delete from comment collection
+      await deleteDoc(commentDocRef);
+      //2) decrement from the total comment posts
+      await updateDoc(postDocRef, {
+        comments: increment(-1),
+      });
+      //3) refetch the comments again
+      fetchComments(
+        'comments',
+        'isFetchingComments',
+        query(commentsCollectionRef, orderBy('createdAt', 'desc'))
+      );
+
+      //4) notify the user
+      ToastAndroid.show('comment deleted', ToastAndroid.LONG);
+    } catch (err) {
+      console.log(err);
+      alert('something went wrong');
+    }
+  };
 
   const commentHoldHandle = () => {
     if (user.id === uId) {
@@ -48,31 +81,7 @@ const Comment = ({
           },
           {
             text: 'Yes',
-            onPress: async () => {
-              try {
-                if (!id) return;
-                //1) delete from comment collection
-                await deleteDoc(getPostCommentDocRef(id, postId));
-                //2) decrement from the total comment posts
-                await updateDoc(getPostRefDoc(postId), {
-                  comments: increment(-1),
-                });
-                //3) refetch the comments again
-                fetchComments(
-                  'comments',
-                  'isFetchingComments',
-                  query(
-                    getPostCommentsCollectionRef(postId),
-                    orderBy('createdAt', 'desc')
-                  )
-                );
-
-                //4) notify the user
-                ToastAndroid.show('comment deleted', ToastAndroid.LONG);
-              } catch (err) {
-                alert('something went wrong');
-              }
-            },
+            onPress: _deleteCommentClickHandle,
           },
         ]
       );
