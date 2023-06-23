@@ -25,10 +25,21 @@ export const getPostRefDoc = id => {
   return doc(db, 'posts', id);
 };
 export const adminPostCollectionRef = collection(db, 'adminposts');
+export const adminPostDocRef = id => {
+  return doc(db, 'adminposts', id);
+};
 
 //comments
 export const getPostCommentsCollectionRef = postId => {
   return collection(db, `posts/${postId}/comments`);
+};
+
+export const getAdminPostCommentsCollectionRef = postId => {
+  return collection(db, `adminposts/${postId}/comments`);
+};
+
+export const getAdminPostCommentDocRef = (commentId, postId) => {
+  return doc(db, `adminposts/${postId}/comments`, commentId);
 };
 
 export const getPostCommentDocRef = (commentId, postId) => {
