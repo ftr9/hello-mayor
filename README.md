@@ -16,7 +16,10 @@
   - [x] Announcements page
   - [x] My Posts page
 - [x] Added firebase in to the project
-  - [x] created userschema
+  - [x] created userSchema
+  - [x] added post add functionality
+  - [x] added comment add functionality
+  - [x] added comment delete functionality
 
 ## 🚀 How to run ?
 
