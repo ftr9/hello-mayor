@@ -10,7 +10,6 @@ import useUserStore from '../../../../store/useUserStore';
 import useCommentsStore from '../../../../store/useCommentsStore';
 import {
   query,
-  where,
   orderBy,
   Timestamp,
   addDoc,
@@ -26,6 +25,7 @@ import { useEffect, useState } from 'react';
 import showCancelableAlert from '../../../../utils/showCancelableAlert';
 import NotFound from '../../../../components/NotFound/NotFound';
 import LoadingIndicator from '../../../../components/loading/LoadingIndicator';
+import FlashListDataRender from '../../../../components/List/FlashListDataRender';
 
 const Comments = () => {
   const { user } = useUserStore();
@@ -117,27 +117,42 @@ const Comments = () => {
     return <LoadingIndicator text="Loading you comments.." />;
   }
 
+  if (comments.length === 0) {
+    return <NotFound title="No Comments Found." />;
+  }
+
   return (
     <View className="flex-1">
-      {comments.length === 0 ? (
-        <NotFound title="No comments found" />
-      ) : (
-        <ScrollView className="flex-1">
-          {comments.map(comment => (
+      <FlashListDataRender
+        isRefreshing={isFetchingComments}
+        onRefresh={() => {
+          fetchComments(
+            'comments',
+            'isFetchingComments',
+            query(
+              getPostCommentsCollectionRef(postId),
+              orderBy('createdAt', 'desc')
+            )
+          );
+        }}
+        data={comments}
+        renderItem={({ item }) => {
+          return (
             <CommentCard
-              avatar={comment.profile.avatar}
-              username={comment.profile.username}
-              content={comment.content}
-              createdAt={new Date(comment.createdAt).toLocaleDateString()}
-              key={comment.id}
-              uId={comment.uId}
-              id={comment.id}
+              avatar={item.profile.avatar}
+              username={item.profile.username}
+              content={item.content}
+              createdAt={new Date(item.createdAt).toLocaleDateString()}
+              uId={item.uId}
+              id={item.id}
               fetchComments={fetchComments}
               postId={postId}
+              isAdminPost={false}
             />
-          ))}
-        </ScrollView>
-      )}
+          );
+        }}
+        estimatedItemSize={100}
+      />
 
       <View className="flex-row items-center  border-txtSecondary">
         <View className="flex-1 translate-y-3">
