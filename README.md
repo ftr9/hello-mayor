@@ -1,4 +1,4 @@
-# Hello Mayor App
+# Hello Mayor App (App is in progress)
 
 ## Software engineering project - Teacher (Keshav Maharjan)
 
