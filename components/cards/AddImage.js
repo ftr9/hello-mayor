@@ -24,7 +24,6 @@ const AddImage = ({ avatar, setAvatar }) => {
     if (imageResult.canceled) {
       return;
     }
-    console.log(imageResult.assets[0].uri);
 
     //3) make sure valid image is selected
     const imageExtension = getValidImageExtension(imageResult.assets[0].uri);
